@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'mergeshapesdialogbase.ui'
 #
-# Created: Tue Mar 30 21:17:48 2010
+# Created: Tue Mar 30 21:30:19 2010
 #      by: PyQt4 UI code generator 4.5.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -65,7 +65,7 @@ class Ui_MergeShapesDialog(object):
 
     def retranslateUi(self, MergeShapesDialog):
         MergeShapesDialog.setWindowTitle(QtGui.QApplication.translate("MergeShapesDialog", "Merge shapefiles", None, QtGui.QApplication.UnicodeUTF8))
-        self.chkListMode.setText(QtGui.QApplication.translate("MergeShapesDialog", "Select files instead of folder", None, QtGui.QApplication.UnicodeUTF8))
+        self.chkListMode.setText(QtGui.QApplication.translate("MergeShapesDialog", "Select by layers in the folder", None, QtGui.QApplication.UnicodeUTF8))
         self.label.setText(QtGui.QApplication.translate("MergeShapesDialog", "Input directory", None, QtGui.QApplication.UnicodeUTF8))
         self.btnSelectDir.setText(QtGui.QApplication.translate("MergeShapesDialog", "Browse", None, QtGui.QApplication.UnicodeUTF8))
         self.label_2.setText(QtGui.QApplication.translate("MergeShapesDialog", "Output shapefile", None, QtGui.QApplication.UnicodeUTF8))
