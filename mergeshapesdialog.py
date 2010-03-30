@@ -46,6 +46,7 @@ class MergeShapesDialog( QDialog, Ui_MergeShapesDialog ):
 
     QObject.connect( self.btnSelectDir, SIGNAL( "clicked()" ), self.inputDir )
     QObject.connect( self.btnSelectFile, SIGNAL( "clicked()" ), self.outFile )
+    QObject.connect( self.chkListMode, SIGNAL( "stateChanged( int )" ), self.changeMode )
 
   def inputDir( self ):
     inDir = QFileDialog.getExistingDirectory( self,
@@ -61,7 +62,7 @@ class MergeShapesDialog( QDialog, Ui_MergeShapesDialog ):
     workDir.setNameFilters( nameFilter )
     self.inputFiles = workDir.entryList()
     if self.inputFiles.count() == 0:
-      QMessageBox.warning( self, self.tr( "No images found" ),
+      QMessageBox.warning( self, self.tr( "No shapes found" ),
         self.tr( "There are no shapefiles in this directory. Please select another one." ) )
       self.inputFiles = None
       return
@@ -75,6 +76,30 @@ class MergeShapesDialog( QDialog, Ui_MergeShapesDialog ):
       return
     self.leOutShape.setText( self.outFileName )
 
+  def changeMode( self ):
+    if self.chkListMode.isChecked():
+      self.label.setText( self.tr( "Input files" ) )
+      QObject.disconnect( self.btnSelectDir, SIGNAL( "clicked()" ), self.inputDir )
+      QObject.connect( self.btnSelectDir, SIGNAL( "clicked()" ), self.inputFiles )
+    else:
+      self.label.setText( self.tr( "Input directory" ) )
+      QObject.disconnect( self.btnSelectDir, SIGNAL( "clicked()" ), self.inputFiles )
+      QObject.connect( self.btnSelectDir, SIGNAL( "clicked()" ), self.inputDir )
+
+  def inputFiles( self ):
+    files = QFileDialog.getOpenFileNames( self, self.tr( "Select files to merge" ), ".", "Shapefiles(*.shp *.SHP)"  )
+    if files.isEmpty():
+      self.inputFiles = None
+      return
+
+    self.inputFiles = QStringList()
+    for f in files:
+      fileName = QFileInfo( f ).fileName()
+      self.inputFiles.append( fileName )
+
+    self.progressFiles.setRange( 0, self.inputFiles.count() )
+    self.leInputDir.setText( files.join( ";" ) )
+
   def reject( self ):
     QDialog.reject( self )
 
@@ -85,7 +110,12 @@ class MergeShapesDialog( QDialog, Ui_MergeShapesDialog ):
         QMessageBox.warning( self, self.tr( "Delete error" ), self.tr( "Can't delete file %1" ).arg( outFileName ) )
         return
 
-    baseDir = self.leInputDir.text()
+    if self.chkListMode.isChecked():
+      files = self.leInputDir.text().split( ";" )
+      baseDir = QFileInfo( files[ 0 ] ).absolutePath()
+    else:
+      baseDir = self.leInputDir.text()
+    #baseDir = self.leInputDir.text()
 
     QApplication.setOverrideCursor( QCursor( Qt.WaitCursor ) )
     self.btnOk.setEnabled( False )
