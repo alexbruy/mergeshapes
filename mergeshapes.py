@@ -115,7 +115,7 @@ class MergeShapesPlugin( object ):
 
     localeShortName = localeFullName[ 0:2 ]
     if localeShortName in [ "ru", "uk" ]:
-      link = QLabel( "<a href=\"http://gis-lab.info/qa/merge-shapes.html\">http://gis-lab.info/qa/merges-hapes.html</a>" )
+      link = QLabel( "<a href=\"http://gis-lab.info/qa/merge-shapes.html\">http://gis-lab.info/qa/merge-shapes.html</a>" )
     #else:
     #  link = QLabel( "<a href=\"http://gis-lab.info/qa/mergeshapes-eng.html\">http://gis-lab.info/qa/mergeshapes.html</a>" )
 
