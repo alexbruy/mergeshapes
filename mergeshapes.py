@@ -78,8 +78,8 @@ class MergeShapesPlugin( object ):
     self.actionRun.setStatusTip( QCoreApplication.translate( "MergeShapes", "Merge multiple shapefiles to one" ) )
     self.actionAbout = QAction( QIcon( ":/icons/about.png" ), "About", self.iface.mainWindow() )
 
-    QObject.connect( self.actionRun, SIGNAL( "activated()" ), self.run )
-    QObject.connect( self.actionAbout, SIGNAL( "activated()" ), self.about )
+    QObject.connect( self.actionRun, SIGNAL( "triggered()" ), self.run )
+    QObject.connect( self.actionAbout, SIGNAL( "triggered()" ), self.about )
 
     self.iface.addPluginToMenu( "MergeShapes", self.actionRun )
     self.iface.addPluginToMenu( "MergeShapes", self.actionAbout )
