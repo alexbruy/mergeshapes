@@ -95,7 +95,7 @@ class MergeShapesPlugin( object ):
     dlgAbout = QDialog()
     dlgAbout.setWindowTitle( QApplication.translate( "MergeShapes", "About MergeShapes", "Window title" ) )
     lines = QVBoxLayout( dlgAbout )
-    title = QLabel( QApplication.translate( "MergeShapes", "<b>DP Simplify</b>" ) )
+    title = QLabel( QApplication.translate( "MergeShapes", "<b>Merge Shapes</b>" ) )
     title.setAlignment( Qt.AlignHCenter | Qt.AlignVCenter )
     lines.addWidget( title )
     version = QLabel( QApplication.translate( "MergeShapes", "Version: %1" ).arg( mVersion ) )
@@ -116,8 +116,8 @@ class MergeShapesPlugin( object ):
     localeShortName = localeFullName[ 0:2 ]
     if localeShortName in [ "ru", "uk" ]:
       link = QLabel( "<a href=\"http://gis-lab.info/qa/merge-shapes.html\">http://gis-lab.info/qa/merge-shapes.html</a>" )
-    #else:
-    #  link = QLabel( "<a href=\"http://gis-lab.info/qa/mergeshapes-eng.html\">http://gis-lab.info/qa/mergeshapes.html</a>" )
+    else:
+      link = QLabel( "<a href=\"http://gis-lab.info/qa/merge-shapes.html\">http://gis-lab.info/qa/merge-shapes.html</a>" )
 
     link.setOpenExternalLinks( True )
     lines.addWidget( link )
