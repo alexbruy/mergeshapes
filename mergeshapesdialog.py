@@ -76,17 +76,7 @@ class MergeShapesDialog( QDialog, Ui_MergeShapesDialog ):
       return
     self.leOutShape.setText( self.outFileName )
 
-  def changeMode( self ):
-    if self.chkListMode.isChecked():
-      self.label.setText( self.tr( "Input files" ) )
-      QObject.disconnect( self.btnSelectDir, SIGNAL( "clicked()" ), self.inputDir )
-      QObject.connect( self.btnSelectDir, SIGNAL( "clicked()" ), self.inputFiles )
-    else:
-      self.label.setText( self.tr( "Input directory" ) )
-      QObject.disconnect( self.btnSelectDir, SIGNAL( "clicked()" ), self.inputFiles )
-      QObject.connect( self.btnSelectDir, SIGNAL( "clicked()" ), self.inputDir )
-
-  def inputFiles( self ):
+  def inputFile( self ):
     files = QFileDialog.getOpenFileNames( self, self.tr( "Select files to merge" ), ".", "Shapefiles(*.shp *.SHP)"  )
     if files.isEmpty():
       self.inputFiles = None
@@ -99,6 +89,16 @@ class MergeShapesDialog( QDialog, Ui_MergeShapesDialog ):
 
     self.progressFiles.setRange( 0, self.inputFiles.count() )
     self.leInputDir.setText( files.join( ";" ) )
+
+  def changeMode( self ):
+    if self.chkListMode.isChecked():
+      self.label.setText( self.tr( "Input files" ) )
+      QObject.disconnect( self.btnSelectDir, SIGNAL( "clicked()" ), self.inputDir )
+      QObject.connect( self.btnSelectDir, SIGNAL( "clicked()" ), self.inputFile )
+    else:
+      self.label.setText( self.tr( "Input directory" ) )
+      QObject.disconnect( self.btnSelectDir, SIGNAL( "clicked()" ), self.inputFile )
+      QObject.connect( self.btnSelectDir, SIGNAL( "clicked()" ), self.inputDir )
 
   def reject( self ):
     QDialog.reject( self )
