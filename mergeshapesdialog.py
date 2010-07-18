@@ -40,6 +40,7 @@ class MergeShapesDialog( QDialog, Ui_MergeShapesDialog ):
     self.iface = iface
 
     self.mergeThread = None
+    self.inputFiles = None
 
     self.btnOk = self.buttonBox.button( QDialogButtonBox.Ok )
     self.btnClose = self.buttonBox.button( QDialogButtonBox.Close )
@@ -104,6 +105,20 @@ class MergeShapesDialog( QDialog, Ui_MergeShapesDialog ):
     QDialog.reject( self )
 
   def accept( self ):
+    if self.inputFiles is None:
+      workDir = QDir( self.leInputDir.text() )
+      workDir.setFilter( QDir.Files | QDir.NoSymLinks | QDir.NoDotAndDotDot )
+      nameFilter = QStringList() << "*.shp" << "*.SHP"
+      workDir.setNameFilters( nameFilter )
+      self.inputFiles = workDir.entryList()
+      if self.inputFiles.count() == 0:
+        QMessageBox.warning( self, self.tr( "No shapes found" ),
+          self.tr( "There are no shapefiles in this directory. Please select another one." ) )
+        self.inputFiles = None
+        return
+
+      self.progressFiles.setRange( 0, self.inputFiles.count() )
+
     outFile = QFile( self.outFileName )
     if outFile.exists():
       if not QgsVectorFileWriter.deleteShapeFile( self.outFileName ):
