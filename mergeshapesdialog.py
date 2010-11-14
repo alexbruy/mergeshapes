@@ -41,6 +41,7 @@ class MergeShapesDialog( QDialog, Ui_MergeShapesDialog ):
 
     self.mergeThread = None
     self.inputFiles = None
+    self.outFileName = None
 
     self.btnOk = self.buttonBox.button( QDialogButtonBox.Ok )
     self.btnClose = self.buttonBox.button( QDialogButtonBox.Close )
@@ -118,6 +119,11 @@ class MergeShapesDialog( QDialog, Ui_MergeShapesDialog ):
         return
 
       self.progressFiles.setRange( 0, self.inputFiles.count() )
+
+    if self.outFileName is None:
+      QMessageBox.warning( self, self.tr( "No output file selected" ),
+        self.tr( "Please specify output filename." ) )
+      return
 
     outFile = QFile( self.outFileName )
     if outFile.exists():
