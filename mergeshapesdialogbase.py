@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'mergeshapesdialogbase.ui'
 #
-# Created: Tue Mar 30 21:30:19 2010
+# Created: Mon Nov 22 18:46:28 2010
 #      by: PyQt4 UI code generator 4.5.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -12,12 +12,24 @@ from PyQt4 import QtCore, QtGui
 class Ui_MergeShapesDialog(object):
     def setupUi(self, MergeShapesDialog):
         MergeShapesDialog.setObjectName("MergeShapesDialog")
-        MergeShapesDialog.resize(377, 273)
+        MergeShapesDialog.resize(377, 302)
         self.verticalLayout = QtGui.QVBoxLayout(MergeShapesDialog)
         self.verticalLayout.setObjectName("verticalLayout")
         self.chkListMode = QtGui.QCheckBox(MergeShapesDialog)
         self.chkListMode.setObjectName("chkListMode")
         self.verticalLayout.addWidget(self.chkListMode)
+        self.horizontalLayout_3 = QtGui.QHBoxLayout()
+        self.horizontalLayout_3.setObjectName("horizontalLayout_3")
+        self.lblGeometry = QtGui.QLabel(MergeShapesDialog)
+        self.lblGeometry.setObjectName("lblGeometry")
+        self.horizontalLayout_3.addWidget(self.lblGeometry)
+        self.cmbGeometry = QtGui.QComboBox(MergeShapesDialog)
+        self.cmbGeometry.setObjectName("cmbGeometry")
+        self.cmbGeometry.addItem(QtCore.QString())
+        self.cmbGeometry.addItem(QtCore.QString())
+        self.cmbGeometry.addItem(QtCore.QString())
+        self.horizontalLayout_3.addWidget(self.cmbGeometry)
+        self.verticalLayout.addLayout(self.horizontalLayout_3)
         self.label = QtGui.QLabel(MergeShapesDialog)
         self.label.setObjectName("label")
         self.verticalLayout.addWidget(self.label)
@@ -66,6 +78,10 @@ class Ui_MergeShapesDialog(object):
     def retranslateUi(self, MergeShapesDialog):
         MergeShapesDialog.setWindowTitle(QtGui.QApplication.translate("MergeShapesDialog", "Merge shapefiles", None, QtGui.QApplication.UnicodeUTF8))
         self.chkListMode.setText(QtGui.QApplication.translate("MergeShapesDialog", "Select by layers in the folder", None, QtGui.QApplication.UnicodeUTF8))
+        self.lblGeometry.setText(QtGui.QApplication.translate("MergeShapesDialog", "Shapefile type", None, QtGui.QApplication.UnicodeUTF8))
+        self.cmbGeometry.setItemText(0, QtGui.QApplication.translate("MergeShapesDialog", "Polygon", None, QtGui.QApplication.UnicodeUTF8))
+        self.cmbGeometry.setItemText(1, QtGui.QApplication.translate("MergeShapesDialog", "Line", None, QtGui.QApplication.UnicodeUTF8))
+        self.cmbGeometry.setItemText(2, QtGui.QApplication.translate("MergeShapesDialog", "Point", None, QtGui.QApplication.UnicodeUTF8))
         self.label.setText(QtGui.QApplication.translate("MergeShapesDialog", "Input directory", None, QtGui.QApplication.UnicodeUTF8))
         self.btnSelectDir.setText(QtGui.QApplication.translate("MergeShapesDialog", "Browse", None, QtGui.QApplication.UnicodeUTF8))
         self.label_2.setText(QtGui.QApplication.translate("MergeShapesDialog", "Output shapefile", None, QtGui.QApplication.UnicodeUTF8))
