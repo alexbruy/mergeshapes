@@ -71,7 +71,7 @@ class MergeShapesPlugin( object ):
     if int( self.QgisVersion ) < 1:
       QMessageBox.warning( self.iface.mainWindow(), "MergeShapes",
                            QCoreApplication.translate( "MergeShapes", "Quantum GIS version detected: " ) + unicode( self.QgisVersion ) + ".xx\n" +
-                           QCoreApplication.translate( "MergeShapes", "This version of RasterCalc requires at least QGIS version 1.0.0\nPlugin will not be enabled." ) )
+                           QCoreApplication.translate( "MergeShapes", "This version of MergeShapes requires at least QGIS version 1.0.0\nPlugin will not be enabled." ) )
       return None
 
     self.actionRun = QAction( QIcon( ":/icons/mergeshapes.png" ), "MergeShapes", self.iface.mainWindow() )
