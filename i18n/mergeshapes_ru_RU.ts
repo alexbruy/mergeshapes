@@ -166,5 +166,15 @@ Plugin will not be enabled.</source>
         <source>Close</source>
         <translation>Закрыть</translation>
     </message>
+    <message>
+        <location filename="mergeshapesdialog.py" line="214"/>
+        <source>Save output shapefile</source>
+        <translation>Сохранить итоговый файл</translation>
+    </message>
+    <message>
+        <location filename="mergeshapesdialog.py" line="231"/>
+        <source>Open input shapefile(s)</source>
+        <translation>Открыть исходный shape-файл</translation>
+    </message>
 </context>
 </TS>
