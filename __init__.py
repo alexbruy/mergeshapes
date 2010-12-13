@@ -42,6 +42,9 @@ def qgisMinimumVersion():
 def authorName():
 	return "Alexander Bruy"
 
+def icon():
+	return "icons/mergeshapes.png"
+
 def classFactory( iface ):
 	from mergeshapes import MergeShapesPlugin
 	return MergeShapesPlugin( iface )
