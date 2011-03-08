@@ -260,6 +260,8 @@ def getShapesByGeometryType( baseDir, inShapes, geomType ):
   for fileName in inShapes:
     layerPath = QFileInfo( baseDir + "/" + fileName ).absoluteFilePath()
     vLayer = QgsVectorLayer( layerPath, QFileInfo( layerPath ).baseName(), "ogr" )
+    if not vLayer.isValid():
+      continue
     layerGeometry = vLayer.geometryType()
     if layerGeometry == QGis.Polygon and geomType == 0:
       outShapes << fileName
@@ -299,6 +301,8 @@ class ShapeMergeThread( QThread ):
     for fileName in self.shapes:
       layerPath = QFileInfo( self.baseDir + "/" + fileName ).absoluteFilePath()
       newLayer = QgsVectorLayer( layerPath, QFileInfo( layerPath ).baseName(), "ogr" )
+      if not newLayer.isValid():
+        continue
       vprovider = newLayer.dataProvider()
       layerFields = vprovider.fields()
       for layerIndex, layerField in layerFields.iteritems():
@@ -314,6 +318,7 @@ class ShapeMergeThread( QThread ):
     # get information about shapefiles
     layerPath = QFileInfo( self.baseDir + "/" + self.shapes[ 0 ] ).absoluteFilePath()
     newLayer = QgsVectorLayer( layerPath, QFileInfo( layerPath ).baseName(), "ogr" )
+    # TODO: check if layer valid?
     self.crs = newLayer.crs()
     self.geom = newLayer.wkbType()
     vprovider = newLayer.dataProvider()
@@ -325,6 +330,8 @@ class ShapeMergeThread( QThread ):
     for fileName in self.shapes:
       layerPath = QFileInfo( self.baseDir + "/" + fileName ).absoluteFilePath()
       newLayer = QgsVectorLayer( layerPath, QFileInfo( layerPath ).baseName(), "ogr" )
+      if not newLayer.isValid():
+        continue
       vprovider = newLayer.dataProvider()
       vprovider.setEncoding( self.inputEncoding )
       layerFields = vprovider.fields()
