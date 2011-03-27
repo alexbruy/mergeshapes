@@ -160,7 +160,9 @@ class MergeShapesDialog( QDialog, Ui_MergeShapesDialog ):
 
     self.mergeThread = ShapeMergeThread( baseDir, self.inputFiles, self.inEncoding, self.outFileName, self.outEncoding )
     QObject.connect( self.mergeThread, SIGNAL( "rangeChanged( PyQt_PyObject )" ), self.setProgressRange )
-    QObject.connect( self.mergeThread, SIGNAL( "fileNameChanged( PyQt_PyObject )" ), self.updateShapeProgressFormat )
+    QObject.connect( self.mergeThread, SIGNAL( "checkStarted()" ), self.setFeatureProgressFormat )
+    QObject.connect( self.mergeThread, SIGNAL( "checkFinished()" ), self.resetFeatureProgressFormat )
+    QObject.connect( self.mergeThread, SIGNAL( "fileNameChanged( PyQt_PyObject )" ), self.setShapeProgressFormat )
     QObject.connect( self.mergeThread, SIGNAL( "featureProcessed()" ), self.featureProcessed )
     QObject.connect( self.mergeThread, SIGNAL( "shapeProcessed()" ), self.shapeProcessed )
     QObject.connect( self.mergeThread, SIGNAL( "processingFinished()" ), self.processingFinished )
@@ -176,10 +178,16 @@ class MergeShapesDialog( QDialog, Ui_MergeShapesDialog ):
     self.progressFeatures.setRange( 0, max )
     self.progressFeatures.setValue( 0 )
 
+  def setFeatureProgressFormat( self ):
+    self.progressFeatures.setFormat( "Checking files: %p% ")
+
+  def resetFeatureProgressFormat( self ):
+    self.progressFeatures.setFormat( "%p% ")
+
   def featureProcessed( self ):
     self.progressFeatures.setValue( self.progressFeatures.value() + 1 )
 
-  def updateShapeProgressFormat( self, fileName ):
+  def setShapeProgressFormat( self, fileName ):
     self.progressFiles.setFormat( "%p% " + fileName )
 
   def shapeProcessed( self ):
@@ -187,6 +195,7 @@ class MergeShapesDialog( QDialog, Ui_MergeShapesDialog ):
 
   def processingFinished( self ):
     self.stopProcessing()
+
 
     if self.chkAddToCanvas.isChecked():
       if not addShapeToCanvas( unicode( self.outFileName ) ):
@@ -303,6 +312,8 @@ class ShapeMergeThread( QThread ):
     # from all selected layers
     mergedFields = {}
     count = 0
+    self.emit( SIGNAL( "rangeChanged( PyQt_PyObject )" ), len( self.shapes ) )
+    self.emit( SIGNAL( "checkStarted()" ) )
     for fileName in self.shapes:
       layerPath = QFileInfo( self.baseDir + "/" + fileName ).absoluteFilePath()
       newLayer = QgsVectorLayer( layerPath, QFileInfo( layerPath ).baseName(), "ogr" )
@@ -319,6 +330,8 @@ class ShapeMergeThread( QThread ):
         if not fieldFound:
           mergedFields[ count ] = layerField
           count += 1
+      self.emit( SIGNAL( "featureProcessed()" ) )
+    self.emit( SIGNAL( "checkFinished()" ) )
 
     # get information about shapefiles
     layerPath = QFileInfo( self.baseDir + "/" + self.shapes[ 0 ] ).absoluteFilePath()
