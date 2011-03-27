@@ -160,6 +160,7 @@ class MergeShapesDialog( QDialog, Ui_MergeShapesDialog ):
 
     self.mergeThread = ShapeMergeThread( baseDir, self.inputFiles, self.inEncoding, self.outFileName, self.outEncoding )
     QObject.connect( self.mergeThread, SIGNAL( "rangeChanged( PyQt_PyObject )" ), self.setProgressRange )
+    QObject.connect( self.mergeThread, SIGNAL( "fileNameChanged( PyQt_PyObject )" ), self.updateProgressFormat )
     QObject.connect( self.mergeThread, SIGNAL( "featureProcessed()" ), self.featureProcessed )
     QObject.connect( self.mergeThread, SIGNAL( "shapeProcessed()" ), self.shapeProcessed )
     QObject.connect( self.mergeThread, SIGNAL( "processingFinished()" ), self.processingFinished )
@@ -174,6 +175,9 @@ class MergeShapesDialog( QDialog, Ui_MergeShapesDialog ):
   def setProgressRange( self, max ):
     self.progressFeatures.setRange( 0, max )
     self.progressFeatures.setValue( 0 )
+
+  def updateProgressFormat( self, fileName ):
+    self.progressFeatures.setFormat( fileName + " %p%" )
 
   def featureProcessed( self ):
     self.progressFeatures.setValue( self.progressFeatures.value() + 1 )
@@ -199,6 +203,7 @@ class MergeShapesDialog( QDialog, Ui_MergeShapesDialog ):
       self.mergeThread = None
 
   def restoreGui( self ):
+    self.progressFeatures.setFormat( "%p%" )
     self.progressFeatures.setValue( 0 )
     self.progressFiles.setValue( 0 )
     QApplication.restoreOverrideCursor()
@@ -339,6 +344,7 @@ class ShapeMergeThread( QThread ):
       vprovider.select( allAttrs )
       nFeat = vprovider.featureCount()
       self.emit( SIGNAL( "rangeChanged( PyQt_PyObject )" ), nFeat )
+      self.emit( SIGNAL( "fileNameChanged( PyQt_PyObject )" ), fileName )
       inFeat = QgsFeature()
       outFeat = QgsFeature()
       inGeom = QgsGeometry()
