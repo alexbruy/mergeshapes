@@ -213,6 +213,7 @@ class MergeShapesDialog( QDialog, Ui_MergeShapesDialog ):
 
   def restoreGui( self ):
     self.progressFiles.setFormat( "%p%" )
+    self.progressFeatures.setRange( 0, 100 )
     self.progressFeatures.setValue( 0 )
     self.progressFiles.setValue( 0 )
     QApplication.restoreOverrideCursor()
