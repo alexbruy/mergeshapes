@@ -50,6 +50,7 @@ class MergeShapesDialog( QDialog, Ui_MergeShapesDialog ):
     QObject.connect( self.btnSelectDir, SIGNAL( "clicked()" ), self.inputDir )
     QObject.connect( self.btnSelectFile, SIGNAL( "clicked()" ), self.outFile )
     QObject.connect( self.chkListMode, SIGNAL( "stateChanged( int )" ), self.changeMode )
+    QObject.connect( self.leOutShape, SIGNAL( "editingFinished()" ), self.updateOutFile )
 
   def inputDir( self ):
     inDir = QFileDialog.getExistingDirectory( self,
@@ -113,6 +114,11 @@ class MergeShapesDialog( QDialog, Ui_MergeShapesDialog ):
       #self.cmbGeometry.show()
       self.lblGeometry.setEnabled( True )
       self.cmbGeometry.setEnabled( True )
+
+  def updateOutFile( self ):
+    self.outFileName = self.leOutShape.text()
+    settings = QSettings()
+    self.outEncoding = settings.value( "/UI/encoding" ).toString()
 
   def reject( self ):
     QDialog.reject( self )
