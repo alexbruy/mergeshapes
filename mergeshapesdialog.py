@@ -2,9 +2,9 @@
 
 #******************************************************************************
 #
-# MergeShapes
+# PointBuilder
 # ---------------------------------------------------------
-# Merge multiple shapefiles to a single shapefile
+# Create points from coordinates
 #
 # Copyright (C) 2010 Alexander Bruy (alexander.bruy@gmail.com)
 #
@@ -155,7 +155,7 @@ class MergeShapesDialog( QDialog, Ui_MergeShapesDialog ):
     outFile = QFile( self.outFileName )
     if outFile.exists():
       if not QgsVectorFileWriter.deleteShapeFile( self.outFileName ):
-        QMessageBox.warning( self, self.tr( "Delete error" ), self.tr( "Can't delete file %1" ).arg( outFileName ) )
+        QMessageBox.warning( self, self.tr( "Delete error" ), self.tr( "Can't delete file %1" ).arg( self.outFileName ) )
         return
 
     QApplication.setOverrideCursor( QCursor( Qt.WaitCursor ) )
