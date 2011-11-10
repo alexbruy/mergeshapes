@@ -1,7 +1,7 @@
 [general]
 name=Merge shapes
 description=Merge multiple shapes to one
-version=Version 0.1.10
+version=Version 0.1.16
 authorName=Alexander Bruy
 icon=icons/mergeshapes.png
 qgisMinimumVersion=1.0.0
