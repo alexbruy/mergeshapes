@@ -100,18 +100,12 @@ class MergeShapesDialog( QDialog, Ui_MergeShapesDialog ):
       self.label.setText( self.tr( "Input files" ) )
       QObject.disconnect( self.btnSelectDir, SIGNAL( "clicked()" ), self.inputDir )
       QObject.connect( self.btnSelectDir, SIGNAL( "clicked()" ), self.inputFile )
-      # hide geometry type selector
-      #self.lblGeometry.hide()
-      #self.cmbGeometry.hide()
       self.lblGeometry.setEnabled( False )
       self.cmbGeometry.setEnabled( False )
     else:
       self.label.setText( self.tr( "Input directory" ) )
       QObject.disconnect( self.btnSelectDir, SIGNAL( "clicked()" ), self.inputFile )
       QObject.connect( self.btnSelectDir, SIGNAL( "clicked()" ), self.inputDir )
-      # show geometry type selector
-      #self.lblGeometry.show()
-      #self.cmbGeometry.show()
       self.lblGeometry.setEnabled( True )
       self.cmbGeometry.setEnabled( True )
 
@@ -141,9 +135,8 @@ class MergeShapesDialog( QDialog, Ui_MergeShapesDialog ):
       baseDir = QFileInfo( files[ 0 ] ).absolutePath()
     else:
       baseDir = self.leInputDir.text()
-
-    # look for shapes with specified geometry type
-    self.inputFiles = getShapesByGeometryType( baseDir, self.inputFiles, self.cmbGeometry.currentIndex() )
+      # look for shapes with specified geometry type
+      self.inputFiles = getShapesByGeometryType( baseDir, self.inputFiles, self.cmbGeometry.currentIndex() )
 
     self.progressFiles.setRange( 0, self.inputFiles.count() )
 
