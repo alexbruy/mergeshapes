@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-mVersion = "0.1.9"
+mVersion = "0.1.18"
 
 #******************************************************************************
 #
@@ -32,6 +32,9 @@ def name():
 
 def description():
 	return "Merge multiple shapes to one"
+
+def category():
+	return "Vector"
 
 def version():
 	return mVersion
