@@ -33,9 +33,9 @@ from qgis.gui import *
 
 import mergeshapesdialog
 
-from __init__ import mVersion
+from __init__ import version as mVersion
 
-import resources
+import resources_rc
 
 class MergeShapesPlugin( object ):
   def __init__( self, iface ):
@@ -108,7 +108,7 @@ class MergeShapesPlugin( object ):
     title = QLabel( QApplication.translate( "MergeShapes", "<b>Merge Shapes</b>" ) )
     title.setAlignment( Qt.AlignHCenter | Qt.AlignVCenter )
     lines.addWidget( title )
-    version = QLabel( QApplication.translate( "MergeShapes", "Version: %1" ).arg( mVersion ) )
+    version = QLabel( QApplication.translate( "MergeShapes", "Version: %1" ).arg( mVersion() ) )
     version.setAlignment( Qt.AlignHCenter | Qt.AlignVCenter )
     lines.addWidget( version )
     lines.addWidget( QLabel( QApplication.translate( "MergeShapes", "Merge multiple shapefiles to one" ) ) )
