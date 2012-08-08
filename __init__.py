@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-mVersion = "0.1.18"
-
 #******************************************************************************
 #
 # MergeShapes
@@ -28,26 +26,26 @@ mVersion = "0.1.18"
 #******************************************************************************
 
 def name():
-	return "Merge shapes"
+  return "Merge shapes"
 
 def description():
-	return "Merge multiple shapes to one"
+  return "Merge multiple shapes to one"
 
 def category():
-	return "Vector"
+  return "Vector"
 
 def version():
-	return mVersion
+  return "0.1.19"
 
 def qgisMinimumVersion():
-	return "1.0"
+  return "1.0"
 
 def authorName():
-	return "Alexander Bruy"
+  return "Alexander Bruy (NextGIS)"
 
 def icon():
-	return "icons/mergeshapes.png"
+  return "icons/mergeshapes.png"
 
 def classFactory( iface ):
-	from mergeshapes import MergeShapesPlugin
-	return MergeShapesPlugin( iface )
+  from mergeshapes import MergeShapesPlugin
+  return MergeShapesPlugin( iface )

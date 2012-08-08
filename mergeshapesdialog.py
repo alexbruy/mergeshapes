@@ -31,7 +31,7 @@ from PyQt4.QtGui import *
 from qgis.core import *
 from qgis.gui import *
 
-from mergeshapesdialogbase import Ui_MergeShapesDialog
+from ui_mergeshapesdialogbase import Ui_MergeShapesDialog
 
 class MergeShapesDialog( QDialog, Ui_MergeShapesDialog ):
   def __init__( self, iface ):
@@ -157,7 +157,8 @@ class MergeShapesDialog( QDialog, Ui_MergeShapesDialog ):
     if self.inEncoding == None:
       self.inEncoding = "System"
 
-    self.mergeThread = ShapeMergeThread( baseDir, self.inputFiles, self.inEncoding, self.outFileName, self.outEncoding )
+    self.mergeThread = ShapeMergeThread( baseDir, self.inputFiles, self.inEncoding, self.outFileName, self.outEncoding,
+                                         self.chkAddFileName.isChecked(), self.chkAddFilePath.isChecked() )
     QObject.connect( self.mergeThread, SIGNAL( "rangeChanged( PyQt_PyObject )" ), self.setProgressRange )
     QObject.connect( self.mergeThread, SIGNAL( "checkStarted()" ), self.setFeatureProgressFormat )
     QObject.connect( self.mergeThread, SIGNAL( "checkFinished()" ), self.resetFeatureProgressFormat )
@@ -290,13 +291,15 @@ def getShapesByGeometryType( baseDir, inShapes, geomType ):
   return outShapes
 
 class ShapeMergeThread( QThread ):
-  def __init__( self, dir, shapes, inputEncoding, outputFileName, outputEncoding ):
+  def __init__( self, dir, shapes, inputEncoding, outputFileName, outputEncoding, addFileName, addFilePath ):
     QThread.__init__( self, QThread.currentThread() )
     self.baseDir = dir
     self.shapes = shapes
     self.inputEncoding = inputEncoding
     self.outputFileName = outputFileName
     self.outputEncoding = outputEncoding
+    self.addFileName = addFileName
+    self.addFilePath = addFilePath
 
     self.mutex = QMutex()
     self.stopMe = 0
@@ -342,6 +345,18 @@ class ShapeMergeThread( QThread ):
     vprovider = newLayer.dataProvider()
     self.fields = mergedFields
 
+    if self.addFileName:
+      f = QgsField( "filename", QVariant.String, "", 255 )
+      self.fNameIndex = len(self.fields) + 1
+      self.fields[self.fNameIndex] = f
+      mergedFields[self.fNameIndex] = f
+
+    if self.addFilePath:
+      f = QgsField( "filepath", QVariant.String, "", 255 )
+      self.fPathIndex = len(self.fields) + 1
+      self.fields[self.fPathIndex] = f
+      mergedFields[self.fPathIndex] = f
+
     writer = QgsVectorFileWriter( self.outputFileName, self.outputEncoding,
              self.fields, self.geom, self.crs )
 
@@ -372,6 +387,12 @@ class ShapeMergeThread( QThread ):
         inGeom = QgsGeometry( inFeat.geometry() )
         outFeat.setGeometry( inGeom )
         outFeat.setAttributeMap( mergedAttrs )
+
+        if self.addFileName:
+          outFeat.addAttribute(self.fNameIndex, QVariant(fileName))
+        if self.addFilePath:
+          outFeat.addAttribute(self.fPathIndex, QVariant(QDir().toNativeSeparators(self.baseDir + "/" + fileName)))
+
         writer.addFeature( outFeat )
         self.emit( SIGNAL( "featureProcessed()" ) )
 

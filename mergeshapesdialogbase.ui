@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>377</width>
-    <height>302</height>
+    <height>373</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -92,6 +92,20 @@
       </widget>
      </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="chkAddFileName">
+     <property name="text">
+      <string>Add column with file name</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="chkAddFilePath">
+     <property name="text">
+      <string>Add column with file path</string>
+     </property>
+    </widget>
    </item>
    <item>
     <widget class="QCheckBox" name="chkAddToCanvas">

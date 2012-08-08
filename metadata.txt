@@ -1,8 +1,19 @@
 [general]
-name=Merge shapes
-description=Merge multiple shapes to one
-category=Vector
-version=Version 0.1.18
-authorName=Alexander Bruy
-icon=icons/mergeshapes.png
-qgisMinimumVersion=1.0.0
+name = Merge shapes
+description = Merge multiple shapes to one
+category = Vector
+version = 0.1.19
+qgisMinimumVersion = 1.0.0
+
+icon = icons/mergeshapes.png
+
+authorName = Alexander Bruy (NextGIS)
+
+tags = vector, shapes, merge
+
+homepage =
+tracker = http://hub.qgis.org/projects/mergeshapes
+repository = http://svn.gis-lab.info/mergeshapes
+
+experimental = False
+deprecated = False
