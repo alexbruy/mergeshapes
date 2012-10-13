@@ -43,6 +43,9 @@ def qgisMinimumVersion():
 def authorName():
   return "Alexander Bruy (NextGIS)"
 
+def email():
+  return "alexander.bruy@gmail.com"
+
 def icon():
   return "icons/mergeshapes.png"
 
