@@ -5,12 +5,12 @@ category = Vector
 version = 0.1.19
 qgisMinimumVersion = 1.0.0
 
-author = Alexander Bruy (NextGIS)
+author = Alexander Bruy
 email = alexander.bruy@gmail.com
 
 icon = icons/mergeshapes.png
 
-tags = vector, shapes, merge
+tags = vector,shapes,merge
 
 homepage =
 tracker = http://hub.qgis.org/projects/mergeshapes
