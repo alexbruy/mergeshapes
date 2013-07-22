@@ -2,7 +2,7 @@
 
 #******************************************************************************
 #
-# PointBuilder
+# MergeShapes
 # ---------------------------------------------------------
 # Create points from coordinates
 #
@@ -32,7 +32,7 @@ from PyQt4.QtGui import *
 from qgis.core import *
 from qgis.gui import *
 
-from ui_mergeshapesdialogbase import Ui_MergeShapesDialog
+from ui.ui_mergeshapesdialogbase import Ui_MergeShapesDialog
 
 
 class MergeShapesDialog(QDialog, Ui_MergeShapesDialog):

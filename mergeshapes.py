@@ -36,6 +36,7 @@ from qgis.core import *
 from qgis.gui import *
 
 import mergeshapesdialog
+import aboutdialog
 
 import resources_rc
 
@@ -92,47 +93,10 @@ class MergeShapesPlugin(object):
         self.iface.removePluginVectorMenu(QCoreApplication.translate("MergeShapes", "MergeShapes"), self.actionAbout)
         self.iface.removeVectorToolBarIcon(self.actionRun)
 
-    def about(self):
-        dlgAbout = QDialog()
-        dlgAbout.setWindowTitle(QApplication.translate("MergeShapes", "About MergeShapes", "Window title"))
-        lines = QVBoxLayout(dlgAbout)
-        title = QLabel(QApplication.translate("MergeShapes", "<b>Merge Shapes</b>"))
-        title.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
-        lines.addWidget(title)
-
-        cfg = ConfigParser.SafeConfigParser()
-        cfg.read(os.path.join(os.path.dirname(__file__), "metadata.txt"))
-        version = cfg.get("general", "version")
-
-        version = QLabel(QApplication.translate("MergeShapes", "Version: %s") % (version))
-        version.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
-        lines.addWidget(version)
-        lines.addWidget(QLabel(QApplication.translate("MergeShapes", "Merge multiple shapefiles to one")))
-        lines.addWidget(QLabel(QApplication.translate("MergeShapes", "<b>Developers:</b>")))
-        lines.addWidget(QLabel("  Alexander Bruy"))
-        lines.addWidget(QLabel(QApplication.translate("MergeShapes", "<b>Homepage:</b>")))
-
-        overrideLocale = bool(QSettings().value("locale/overrideFlag", False))
-        if not overrideLocale:
-            localeFullName = QLocale.system().name()
-        else:
-            localeFullName = QSettings().value("locale/userLocale", "")
-
-        localeShortName = localeFullName[0:2]
-        if localeShortName in ["ru", "uk"]:
-            link = QLabel("<a href=\"http://gis-lab.info/qa/merge-shapes.html\">http://gis-lab.info/qa/merge-shapes.html</a>")
-        else:
-            link = QLabel("<a href=\"http://gis-lab.info/qa/merge-shapes.html\">http://gis-lab.info/qa/merge-shapes.html</a>")
-
-        link.setOpenExternalLinks(True)
-        lines.addWidget(link)
-
-        btnClose = QPushButton(QApplication.translate("MergeShapes", "Close"))
-        lines.addWidget(btnClose)
-        btnClose.clicked.connect(dlg.About.close)
-
-        dlgAbout.exec_()
-
     def run(self):
         dlg = mergeshapesdialog.MergeShapesDialog(self.iface)
         dlg.exec_()
+
+    def about(self):
+        d = aboutdialog.AboutDialog()
+        d.exec_()
