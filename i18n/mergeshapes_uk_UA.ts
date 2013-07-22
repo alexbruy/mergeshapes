@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="uk_UA" sourcelanguage="">
+<!DOCTYPE TS>
+<TS version="2.0" language="uk_UA">
 <context>
     <name>Dialog</name>
     <message>
         <location filename="ui/aboutdialogbase.ui" line="14"/>
         <source>About MergeShapes</source>
-        <translation type="unfinished">Про MergeShapes</translation>
+        <translation>Про MergeShapes</translation>
     </message>
     <message>
         <location filename="ui/aboutdialogbase.ui" line="44"/>
         <source>TextLabel</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="ui/aboutdialogbase.ui" line="30"/>
@@ -19,7 +20,7 @@
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:16pt; font-weight:600;&quot;&gt;MergeShapes&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="ui/aboutdialogbase.ui" line="67"/>
@@ -28,7 +29,7 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -84,18 +85,19 @@ Plugin will not be enabled.</source>
     <message>
         <location filename="mergeshapes.py" line="93"/>
         <source>MergeShapes</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="mergeshapes.py" line="74"/>
         <source>QGIS version detected: </source>
-        <translation type="unfinished"></translation>
+        <translation>Знайдено QGIS версії: </translation>
     </message>
     <message>
         <location filename="mergeshapes.py" line="74"/>
         <source>This version of MergeShapes requires at least QGIS version 2.0
 Plugin will not be enabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ця версія MergeShapes розрахована на QGIS 2.0 або новіше
+Модуль не буде завантажений.</translation>
     </message>
 </context>
 <context>
@@ -225,18 +227,19 @@ Plugin will not be enabled.</source>
     <message>
         <location filename="ui/mergeshapesdialogbase.ui" line="99"/>
         <source>Add column with file name</source>
-        <translation type="unfinished"></translation>
+        <translation>Додати стовпчик з іменем файла</translation>
     </message>
     <message>
         <location filename="ui/mergeshapesdialogbase.ui" line="106"/>
         <source>Add column with file path</source>
-        <translation type="unfinished"></translation>
+        <translation>Додати стовпчик зі шляхом до файла</translation>
     </message>
     <message>
         <location filename="mergeshapesdialog.py" line="212"/>
         <source>Error loading output shapefile:
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка завантаження файла:
+%s</translation>
     </message>
 </context>
 </TS>
