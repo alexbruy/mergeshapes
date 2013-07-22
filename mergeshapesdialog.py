@@ -49,73 +49,72 @@ class MergeShapesDialog(QDialog, Ui_MergeShapesDialog):
         self.btnOk = self.buttonBox.button(QDialogButtonBox.Ok)
         self.btnClose = self.buttonBox.button(QDialogButtonBox.Close)
 
-        QObject.connect(self.btnSelectDir, SIGNAL("clicked()"), self.inputDir)
-        QObject.connect(self.btnSelectFile, SIGNAL("clicked()"), self.outFile)
-        QObject.connect(self.chkListMode, SIGNAL("stateChanged(int)"), self.changeMode)
-        QObject.connect(self.leOutShape, SIGNAL("editingFinished()"), self.updateOutFile)
+        self.btnSelectDir.clicked.connect(self.inputDir)
+        self.btnSelectFile.clicked.connect(self.outFile)
+        self.chkListMode.stateChanged.connect(self.changeMode)
+        self.leOutShape.editingFinished.connect(self.updateOutFile)
 
     def inputDir(self):
         inDir = QFileDialog.getExistingDirectory(self,
                                                  self.tr("Select directory with shapefiles to merge"),
                                                  ".")
 
-        if inDir.isEmpty():
+        if inDir == "":
             return
 
         workDir = QDir(inDir)
         workDir.setFilter(QDir.Files | QDir.NoSymLinks | QDir.NoDotAndDotDot)
-        nameFilter = QStringList() << "*.shp" << "*.SHP"
+        nameFilter = ["*.shp", "*.SHP"]
         workDir.setNameFilters(nameFilter)
         self.inputFiles = workDir.entryList()
-        if self.inputFiles.count() == 0:
+        if len(self.inputFiles) == 0:
             QMessageBox.warning(self,
                                 self.tr("No shapes found"),
                                 self.tr("There are no shapefiles in this directory. Please select another one."))
             self.inputFiles = None
             return
 
-        #self.progressFiles.setRange(0, self.inputFiles.count())
         self.leInputDir.setText(inDir)
 
     def outFile(self):
-        (self.outFileName, self.outEncoding) = saveDialog(self)
+        (self.outFileName, self.outEncoding) = self.saveDialog(self)
         if self.outFileName is None or self.outEncoding is None:
             return
         self.leOutShape.setText(self.outFileName)
 
     def inputFile(self):
-        (files, encoding) = openDialog(self)
+        (files, encoding) = selopenDialog(self)
         if files.isEmpty() or encoding is None:
             self.inputFiles = None
             return
 
         self.inEncoding = encoding
-        self.inputFiles = QStringList()
+        self.inputFiles = []
         for f in files:
             fileName = QFileInfo(f).fileName()
             self.inputFiles.append(fileName)
 
-        self.progressFiles.setRange(0, self.inputFiles.count())
-        self.leInputDir.setText(files.join(";"))
+        self.progressFiles.setRange(0, len(self.inputFiles))
+        self.leInputDir.setText(";".join(files))
 
     def changeMode(self):
         if self.chkListMode.isChecked():
             self.label.setText(self.tr("Input files"))
-            QObject.disconnect(self.btnSelectDir, SIGNAL("clicked()"), self.inputDir)
-            QObject.connect(self.btnSelectDir, SIGNAL("clicked()"), self.inputFile)
+            self.btnSelectDir.clicked.disconnect(self.inputDir)
+            self.btnSelectDir.clicked.connect(self.inputFile)
             self.lblGeometry.setEnabled(False)
             self.cmbGeometry.setEnabled(False)
         else:
             self.label.setText(self.tr("Input directory"))
-            QObject.disconnect(self.btnSelectDir, SIGNAL("clicked()"), self.inputFile)
-            QObject.connect(self.btnSelectDir, SIGNAL("clicked()"), self.inputDir)
+            self.btnSelectDir.clicked.disconnect(self.inputFile)
+            self.btnSelectDir.clicked.connect(self.inputDir)
             self.lblGeometry.setEnabled(True)
             self.cmbGeometry.setEnabled(True)
 
     def updateOutFile(self):
         self.outFileName = self.leOutShape.text()
         settings = QSettings()
-        self.outEncoding = settings.value("/UI/encoding").toString()
+        self.outEncoding = settings.value("/UI/encoding")
 
     def reject(self):
         QDialog.reject(self)
@@ -124,10 +123,10 @@ class MergeShapesDialog(QDialog, Ui_MergeShapesDialog):
         if self.inputFiles is None:
             workDir = QDir(self.leInputDir.text())
             workDir.setFilter(QDir.Files | QDir.NoSymLinks | QDir.NoDotAndDotDot)
-            nameFilter = QStringList() << "*.shp" << "*.SHP"
+            nameFilter = ["*.shp", "*.SHP"]
             workDir.setNameFilters(nameFilter)
             self.inputFiles = workDir.entryList()
-            if self.inputFiles.count() == 0:
+            if len(self.inputFiles) == 0:
                 QMessageBox.warning(self,
                                     self.tr("No shapes found"),
                                     self.tr("There are no shapefiles in this directory. Please select another one."))
@@ -140,9 +139,9 @@ class MergeShapesDialog(QDialog, Ui_MergeShapesDialog):
         else:
             baseDir = self.leInputDir.text()
             # look for shapes with specified geometry type
-            self.inputFiles = getShapesByGeometryType(baseDir, self.inputFiles, self.cmbGeometry.currentIndex())
+            self.inputFiles = self.getShapesByGeometryType(baseDir, self.inputFiles, self.cmbGeometry.currentIndex())
 
-        self.progressFiles.setRange(0, self.inputFiles.count())
+        self.progressFiles.setRange(0, len(self.inputFiles))
 
         if self.outFileName is None:
             QMessageBox.warning(self,
@@ -171,23 +170,23 @@ class MergeShapesDialog(QDialog, Ui_MergeShapesDialog):
                                             self.outEncoding,
                                             self.chkAddFileName.isChecked(),
                                             self.chkAddFilePath.isChecked())
-        QObject.connect(self.mergeThread, SIGNAL("rangeChanged(PyQt_PyObject)"), self.setProgressRange)
-        QObject.connect(self.mergeThread, SIGNAL("checkStarted()"), self.setFeatureProgressFormat)
-        QObject.connect(self.mergeThread, SIGNAL("checkFinished()"), self.resetFeatureProgressFormat)
-        QObject.connect(self.mergeThread, SIGNAL("fileNameChanged(PyQt_PyObject)"), self.setShapeProgressFormat)
-        QObject.connect(self.mergeThread, SIGNAL("featureProcessed()"), self.featureProcessed)
-        QObject.connect(self.mergeThread, SIGNAL("shapeProcessed()"), self.shapeProcessed)
-        QObject.connect(self.mergeThread, SIGNAL("processingFinished()"), self.processingFinished)
-        QObject.connect(self.mergeThread, SIGNAL("processingInterrupted()"), self.processingInterrupted)
+        self.mergeThread.rangeChanged.connect(self.setProgressRange)
+        self.mergeThread.checkStarted.connect(self.setFeatureProgressFormat)
+        self.mergeThread.checkFinished.connect(self.resetFeatureProgressFormat)
+        self.mergeThread.fileNameChanged.connect(self.setShapeProgressFormat)
+        self.mergeThread.featureProcessed.connect(self.featureProcessed)
+        self.mergeThread.shapeProcessed.connect(self.shapeProcessed)
+        self.mergeThread.processingFinished.connect(self.processingFinished)
+        self.mergeThread.processingInterrupted.connect(self.processingInterrupted)
 
         self.btnClose.setText(self.tr("Cancel"))
-        QObject.disconnect(self.buttonBox, SIGNAL("rejected()"), self.reject)
-        QObject.connect(self.btnClose, SIGNAL("clicked()"), self.stopProcessing)
+        self.buttonBox.rejected.disconnect(self.reject)
+        self.btnClose.clicked.connect(self.stopProcessing)
 
         self.mergeThread.start()
 
-    def setProgressRange(self, max):
-        self.progressFeatures.setRange(0, max)
+    def setProgressRange(self, maxVal):
+        self.progressFeatures.setRange(0, maxVal)
         self.progressFeatures.setValue(0)
 
     def setFeatureProgressFormat(self):
@@ -210,10 +209,10 @@ class MergeShapesDialog(QDialog, Ui_MergeShapesDialog):
 
 
         if self.chkAddToCanvas.isChecked():
-            if not addShapeToCanvas(unicode(self.outFileName)):
+            if not self.addShapeToCanvas(unicode(self.outFileName)):
                 QMessageBox.warning(self,
                                     self.tr("Merging"),
-                                    self.tr("Error loading output shapefile:\n%1").arg(unicode(self.outFileName)))
+                                    self.tr("Error loading output shapefile:\n%s") % (unicode(self.outFileName)))
 
         self.restoreGui()
 
@@ -231,47 +230,47 @@ class MergeShapesDialog(QDialog, Ui_MergeShapesDialog):
         self.progressFeatures.setValue(0)
         self.progressFiles.setValue(0)
         QApplication.restoreOverrideCursor()
-        QObject.connect(self.buttonBox, SIGNAL("rejected()"), self.reject)
+        self.buttonBox.rejected.connect(self.reject)
         self.btnClose.setText(self.tr("Close"))
         self.btnOk.setEnabled(True)
 
-    def saveDialog(parent):
+    def saveDialog(self, parent):
         settings = QSettings()
-        dirName = settings.value("/UI/lastShapefileDir").toString()
-        filtering = QString("Shapefiles (*.shp)")
-        encode = settings.value("/UI/encoding").toString()
+        dirName = settings.value("/UI/lastShapefileDir")
+        filtering = "Shapefiles (*.shp)"
+        encode = settings.value("/UI/encoding")
         title = QCoreApplication.translate("MergeShapesDialog", "Save output shapefile")
         fileDialog = QgsEncodingFileDialog(parent, title, dirName, filtering, encode)
-        fileDialog.setDefaultSuffix(QString("shp"))
+        fileDialog.setDefaultSuffix("shp")
         fileDialog.setFileMode(QFileDialog.AnyFile)
         fileDialog.setAcceptMode(QFileDialog.AcceptSave)
         fileDialog.setConfirmOverwrite(True)
         if not fileDialog.exec_() == QDialog.Accepted:
             return None, None
         files = fileDialog.selectedFiles()
-        settings.setValue("/UI/lastShapefileDir", QVariant(QFileInfo(unicode(files.first())).absolutePath()))
-        return (unicode(files.first()), unicode(fileDialog.encoding()))
+        settings.setValue("/UI/lastShapefileDir", QFileInfo(unicode(files[0])).absolutePath())
+        return (unicode(files[0]), unicode(fileDialog.encoding()))
 
-    def openDialog(parent):
+    def openDialog(self, parent):
         settings = QSettings()
-        dirName = settings.value("/UI/lastShapefileDir").toString()
-        filtering = QString("Shapefiles (*.shp)")
-        encode = settings.value("/UI/encoding").toString()
+        dirName = settings.value("/UI/lastShapefileDir")
+        filtering = "Shapefiles (*.shp)"
+        encode = settings.value("/UI/encoding")
         title = QCoreApplication.translate("MergeShapesDialog", "Open input shapefile(s)")
-        fileDialog = QgsEncodingFileDialog(parent, title, dirName, QString(filtering), encode)
+        fileDialog = QgsEncodingFileDialog(parent, title, dirName, filtering, encode)
         fileDialog.setFileMode(QFileDialog.ExistingFiles)
         fileDialog.setAcceptMode(QFileDialog.AcceptOpen)
         if not fileDialog.exec_() == QDialog.Accepted:
             return None, None
         files = fileDialog.selectedFiles()
-        settings.setValue("/UI/lastShapefileDir", QVariant(QFileInfo(unicode(files.first())).absolutePath()))
+        settings.setValue("/UI/lastShapefileDir", QFileInfo(unicode(files[0])).absolutePath())
         # save file names as unicode
-        openedFiles = QStringList()
+        openedFiles = []
         for f in files:
-            openedFiles << unicode(f)
-        return ((openedFiles), unicode(fileDialog.encoding()))
+            openedFiles.append(unicode(f))
+        return (openedFiles, unicode(fileDialog.encoding()))
 
-    def addShapeToCanvas(shapefile_path):
+    def addShapeToCanvas(self, shapefile_path):
         file_info = QFileInfo(shapefile_path)
         if file_info.exists():
             layer_name = file_info.completeBaseName()
@@ -284,8 +283,8 @@ class MergeShapesDialog(QDialog, Ui_MergeShapesDialog):
         else:
             return False
 
-    def getShapesByGeometryType(baseDir, inShapes, geomType):
-        outShapes = QStringList()
+    def getShapesByGeometryType(self, baseDir, inShapes, geomType):
+        outShapes = []
         for fileName in inShapes:
             layerPath = QFileInfo(baseDir + "/" + fileName).absoluteFilePath()
             vLayer = QgsVectorLayer(layerPath, QFileInfo(layerPath).baseName(), "ogr")
@@ -293,19 +292,28 @@ class MergeShapesDialog(QDialog, Ui_MergeShapesDialog):
                 continue
             layerGeometry = vLayer.geometryType()
             if layerGeometry == QGis.Polygon and geomType == 0:
-                outShapes << fileName
+                outShapes.append(fileName)
             elif layerGeometry == QGis.Line and geomType == 1:
-                outShapes << fileName
+                outShapes,append(fileName)
             elif layerGeometry == QGis.Point and geomType == 2:
-                outShapes << fileName
+                outShapes.append(fileName)
 
-        if outShapes.count() == 0:
+        if len(outShapes) == 0:
             return None
 
         return outShapes
 
 
 class ShapeMergeThread(QThread):
+    rangeChanged = pyqtSignal(int)
+    checkStarted = pyqtSignal()
+    featureProcessed = pyqtSignal()
+    checkFinished = pyqtSignal()
+    fileNameChanged = pyqtSignal(str)
+    shapeProcessed = pyqtSignal()
+    processingFinished = pyqtSignal()
+    processingInterrupted = pyqtSignal()
+
     def __init__(self, dir, shapes, inputEncoding, outputFileName, outputEncoding, addFileName, addFilePath):
         QThread.__init__(self, QThread.currentThread())
         self.baseDir = dir
@@ -328,10 +336,9 @@ class ShapeMergeThread(QThread):
 
         # create attribute list with uniquie fields
         # from all selected layers
-        mergedFields = {}
-        count = 0
-        self.emit(SIGNAL("rangeChanged(PyQt_PyObject)"), len(self.shapes))
-        self.emit(SIGNAL("checkStarted()"))
+        mergedFields = QgsFields()
+        self.rangeChanged.emit(len(self.shapes))
+        self.checkStarted.emit()
         for fileName in self.shapes:
             layerPath = QFileInfo(self.baseDir + "/" + fileName).absoluteFilePath()
             newLayer = QgsVectorLayer(layerPath, QFileInfo(layerPath).baseName(), "ogr")
@@ -339,17 +346,16 @@ class ShapeMergeThread(QThread):
                 continue
             vprovider = newLayer.dataProvider()
             layerFields = vprovider.fields()
-            for layerIndex, layerField in layerFields.iteritems():
+            for layerField in layerFields:
                 fieldFound = False
-                for mergedIndex, mergedField in mergedFields.iteritems():
+                for mergedField in mergedFields:
                     if (mergedField.name() == layerField.name()) and (mergedField.type() == layerField.type()):
                         fieldFound = True
 
                 if not fieldFound:
-                    mergedFields[count] = layerField
-                    count += 1
-            self.emit(SIGNAL("featureProcessed()"))
-        self.emit(SIGNAL("checkFinished()"))
+                    mergedFields.append(layerField)
+            self.featureProcessed.emit()
+        self.checkFinished.emit()
 
         # get information about shapefiles
         layerPath = QFileInfo(self.baseDir + "/" + self.shapes[0]).absoluteFilePath()
@@ -363,14 +369,13 @@ class ShapeMergeThread(QThread):
         if self.addFileName:
             f = QgsField("filename", QVariant.String, "", 255)
             self.fNameIndex = len(self.fields) + 1
-            self.fields[self.fNameIndex] = f
-            mergedFields[self.fNameIndex] = f
+            self.fields.append(f)
+            mergedFields.append(f)
 
         if self.addFilePath:
             f = QgsField("filepath", QVariant.String, "", 255)
-            self.fPathIndex = len(self.fields) + 1
-            self.fields[self.fPathIndex] = f
-            mergedFields[self.fPathIndex] = f
+            self.fields.append(f)
+            mergedFields.append(f)
 
         writer = QgsVectorFileWriter(self.outputFileName,
                                      self.outputEncoding,
@@ -386,35 +391,34 @@ class ShapeMergeThread(QThread):
             vprovider = newLayer.dataProvider()
             vprovider.setEncoding(self.inputEncoding)
             layerFields = vprovider.fields()
-            allAttrs = vprovider.attributeIndexes()
-            vprovider.select(allAttrs)
+
             nFeat = vprovider.featureCount()
-            self.emit(SIGNAL("rangeChanged(PyQt_PyObject)"), nFeat)
-            self.emit(SIGNAL("fileNameChanged(PyQt_PyObject)"), fileName)
+
+            self.rangeChanged.emit(nFeat)
+            self.fileNameChanged.emit(fileName)
+
             inFeat = QgsFeature()
             outFeat = QgsFeature()
             inGeom = QgsGeometry()
-            while vprovider.nextFeature(inFeat):
-                atMap = inFeat.attributeMap()
-                mergedAttrs = {}
+            for f in newLayer.getFeatures():
+                outFeat.setFields(self.fields, True)
                 # fill available attributes with values
-                for layerIndex, layerField in layerFields.iteritems():
-                    for mergedIndex, mergedField in self.fields.iteritems():
+                for layerField in layerFields:
+                    for mergedField in self.fields:
                         if (mergedField.name() == layerField.name()) and (mergedField.type() == layerField.type()):
-                            mergedAttrs[mergedIndex] = atMap[layerIndex]
-                inGeom = QgsGeometry(inFeat.geometry())
+                            outFeat[mergedField.name()] = f[mergedField.name()]
+                inGeom = QgsGeometry(f.geometry())
                 outFeat.setGeometry(inGeom)
-                outFeat.setAttributeMap(mergedAttrs)
 
                 if self.addFileName:
-                    outFeat.addAttribute(self.fNameIndex, QVariant(fileName))
+                    outFeat.setAttribute("filename", fileName)
                 if self.addFilePath:
-                    outFeat.addAttribute(self.fPathIndex, QVariant(QDir().toNativeSeparators(self.baseDir + "/" + fileName)))
+                    outFeat.setAttribute("filepath", QDir().toNativeSeparators(self.baseDir + "/" + fileName))
 
                 writer.addFeature(outFeat)
-                self.emit(SIGNAL("featureProcessed()"))
+                self.featureProcessed.emit()
 
-            self.emit(SIGNAL("shapeProcessed()"))
+            self.shapeProcessed.emit()
             self.mutex.lock()
             s = self.stopMe
             self.mutex.unlock()
@@ -425,9 +429,9 @@ class ShapeMergeThread(QThread):
         del writer
 
         if not interrupted:
-            self.emit(SIGNAL("processingFinished()"))
+            self.processingFinished.emit()
         else:
-            self.emit(SIGNAL("processingInterrupted()"))
+            self.processingInterrupted.emit()
 
     def stop(self):
         self.mutex.lock()

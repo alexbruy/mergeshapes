@@ -26,6 +26,9 @@
 #******************************************************************************
 
 
+import os
+import ConfigParser
+
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
@@ -34,29 +37,24 @@ from qgis.gui import *
 
 import mergeshapesdialog
 
-from __init__ import version as mVersion
-
 import resources_rc
 
 
 class MergeShapesPlugin(object):
     def __init__(self, iface):
         self.iface = iface
-        self.iface = iface
-        try:
-            self.QgisVersion = unicode(QGis.QGIS_VERSION_INT)
-        except:
-            self.QgisVersion = unicode(QGis.qgisVersion)[0]
+
+        self.qgsVersion = unicode(QGis.QGIS_VERSION_INT)
 
         # For i18n support
         userPluginPath = QFileInfo(QgsApplication.qgisUserDbFilePath()).path() + "/python/plugins/mergeshapes"
         systemPluginPath = QgsApplication.prefixPath() + "/python/plugins/mergeshapes"
 
-        overrideLocale = QSettings().value("locale/overrideFlag", QVariant(False)).toBool()
+        overrideLocale = bool(QSettings().value("locale/overrideFlag", False))
         if not overrideLocale:
             localeFullName = QLocale.system().name()
         else:
-            localeFullName = QSettings().value("locale/userLocale", QVariant("")).toString()
+            localeFullName = QSettings().value("locale/userLocale", "")
 
         if QFileInfo(userPluginPath).exists():
             translationPath = userPluginPath + "/i18n/mergeshapes_" + localeFullName + ".qm"
@@ -70,10 +68,11 @@ class MergeShapesPlugin(object):
             QCoreApplication.installTranslator(self.translator)
 
     def initGui(self):
-        if int(self.QgisVersion) < 1:
+        if int(self.qgsVersion) < 10900:
+            qgisVersion = self.qgsVersion[0] + "." + self.qgsVersion[2] + "." + self.qgsVersion[3]
             QMessageBox.warning(self.iface.mainWindow(), "MergeShapes",
-                                QCoreApplication.translate("MergeShapes", "Quantum GIS version detected: ") + unicode(self.QgisVersion) + ".xx\n" +
-                                QCoreApplication.translate("MergeShapes", "This version of MergeShapes requires at least QGIS version 1.0.0\nPlugin will not be enabled."))
+                                QCoreApplication.translate("MergeShapes", "QGIS version detected: ") + qgisVersion +
+                                QCoreApplication.translate("MergeShapes", "This version of MergeShapes requires at least QGIS version 2.0\nPlugin will not be enabled."))
             return None
 
         self.actionRun = QAction(QIcon(":/icons/mergeshapes.png"), "MergeShapes", self.iface.mainWindow())
@@ -81,27 +80,17 @@ class MergeShapesPlugin(object):
         self.actionRun.setWhatsThis(QCoreApplication.translate("MergeShapes", "Merge multiple shapefiles to one"))
         self.actionAbout = QAction(QIcon(":/icons/about.png"), "About", self.iface.mainWindow())
 
-        QObject.connect(self.actionRun, SIGNAL("triggered()"), self.run)
-        QObject.connect(self.actionAbout, SIGNAL("triggered()"), self.about)
+        self.actionRun.triggered.connect(self.run)
+        self.actionAbout.triggered.connect(self.about)
 
-        if hasattr(self.iface, "addPluginToVectorMenu"):
-            self.iface.addPluginToVectorMenu(QCoreApplication.translate("MergeShapes", "MergeShapes"), self.actionRun)
-            self.iface.addPluginToVectorMenu(QCoreApplication.translate("MergeShapes", "MergeShapes"), self.actionAbout)
-            self.iface.addVectorToolBarIcon(self.actionRun)
-        else:
-            self.iface.addPluginToMenu(QCoreApplication.translate("MergeShapes", "MergeShapes"), self.actionRun)
-            self.iface.addPluginToMenu(QCoreApplication.translate("MergeShapes", "MergeShapes"), self.actionAbout)
-            self.iface.addToolBarIcon(self.actionRun)
+        self.iface.addPluginToVectorMenu(QCoreApplication.translate("MergeShapes", "MergeShapes"), self.actionRun)
+        self.iface.addPluginToVectorMenu(QCoreApplication.translate("MergeShapes", "MergeShapes"), self.actionAbout)
+        self.iface.addVectorToolBarIcon(self.actionRun)
 
     def unload(self):
-        if hasattr(self.iface, "addPluginToVectorMenu"):
-            self.iface.removePluginVectorMenu(QCoreApplication.translate("MergeShapes", "MergeShapes"), self.actionRun)
-            self.iface.removePluginVectorMenu(QCoreApplication.translate("MergeShapes", "MergeShapes"), self.actionAbout)
-            self.iface.removeVectorToolBarIcon(self.actionRun)
-        else:
-            self.iface.removePluginMenu(QCoreApplication.translate("MergeShapes", "MergeShapes"), self.actionRun)
-            self.iface.removePluginMenu(QCoreApplication.translate("MergeShapes", "MergeShapes"), self.actionAbout)
-            self.iface.removeToolBarIcon(self.actionRun)
+        self.iface.removePluginVectorMenu(QCoreApplication.translate("MergeShapes", "MergeShapes"), self.actionRun)
+        self.iface.removePluginVectorMenu(QCoreApplication.translate("MergeShapes", "MergeShapes"), self.actionAbout)
+        self.iface.removeVectorToolBarIcon(self.actionRun)
 
     def about(self):
         dlgAbout = QDialog()
@@ -110,20 +99,24 @@ class MergeShapesPlugin(object):
         title = QLabel(QApplication.translate("MergeShapes", "<b>Merge Shapes</b>"))
         title.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
         lines.addWidget(title)
-        version = QLabel(QApplication.translate("MergeShapes", "Version: %1").arg(mVersion()))
+
+        cfg = ConfigParser.SafeConfigParser()
+        cfg.read(os.path.join(os.path.dirname(__file__), "metadata.txt"))
+        version = cfg.get("general", "version")
+
+        version = QLabel(QApplication.translate("MergeShapes", "Version: %s") % (version))
         version.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
         lines.addWidget(version)
         lines.addWidget(QLabel(QApplication.translate("MergeShapes", "Merge multiple shapefiles to one")))
         lines.addWidget(QLabel(QApplication.translate("MergeShapes", "<b>Developers:</b>")))
         lines.addWidget(QLabel("  Alexander Bruy"))
-        lines.addWidget(QLabel("  Maxim Dubinin"))
         lines.addWidget(QLabel(QApplication.translate("MergeShapes", "<b>Homepage:</b>")))
 
-        overrideLocale = QSettings().value("locale/overrideFlag", QVariant(False)).toBool()
+        overrideLocale = bool(QSettings().value("locale/overrideFlag", False))
         if not overrideLocale:
             localeFullName = QLocale.system().name()
         else:
-            localeFullName = QSettings().value("locale/userLocale", QVariant("")).toString()
+            localeFullName = QSettings().value("locale/userLocale", "")
 
         localeShortName = localeFullName[0:2]
         if localeShortName in ["ru", "uk"]:
@@ -136,7 +129,7 @@ class MergeShapesPlugin(object):
 
         btnClose = QPushButton(QApplication.translate("MergeShapes", "Close"))
         lines.addWidget(btnClose)
-        QObject.connect(btnClose, SIGNAL("clicked()"), dlgAbout, SLOT("close()"))
+        btnClose.clicked.connect(dlg.About.close)
 
         dlgAbout.exec_()
 

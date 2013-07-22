@@ -3,7 +3,7 @@ name = Merge shapes
 description = Merge multiple shapes to one
 category = Vector
 version = 0.1.19
-qgisMinimumVersion = 1.0.0
+qgisMinimumVersion = 2.0
 
 author = Alexander Bruy
 email = alexander.bruy@gmail.com
@@ -13,8 +13,8 @@ icon = icons/mergeshapes.png
 tags = vector,shapes,merge
 
 homepage =
-tracker = http://hub.qgis.org/projects/mergeshapes
-repository = http://svn.gis-lab.info/mergeshapes
+tracker = http://hub.qgis.org/projects/mergeshapes/issues
+repository = https://github.com/alexbruy/mergeshapes
 
 experimental = False
 deprecated = False

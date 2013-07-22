@@ -26,30 +26,6 @@
 #******************************************************************************
 
 
-def name():
-    return "Merge shapes"
-
-def description():
-    return "Merge multiple shapes to one"
-
-def category():
-    return "Vector"
-
-def version():
-    return "0.1.19"
-
-def qgisMinimumVersion():
-    return "1.0"
-
-def authorName():
-    return "Alexander Bruy (NextGIS)"
-
-def email():
-    return "alexander.bruy@gmail.com"
-
-def icon():
-    return "icons/mergeshapes.png"
-
 def classFactory(iface):
     from mergeshapes import MergeShapesPlugin
     return MergeShapesPlugin(iface)
