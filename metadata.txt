@@ -2,7 +2,7 @@
 name = Merge shapes
 description = Merge multiple shapes to one
 category = Vector
-version = 0.1.19
+version = 0.2.0
 qgisMinimumVersion = 2.0
 
 author = Alexander Bruy
