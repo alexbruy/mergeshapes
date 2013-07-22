@@ -6,7 +6,7 @@
 # ---------------------------------------------------------
 # Merge multiple shapefiles to a single shapefile
 #
-# Copyright (C) 2010 Alexander Bruy (alexander.bruy@gmail.com)
+# Copyright (C) 2010-2013 Alexander Bruy (alexander.bruy@gmail.com)
 #
 # This source is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free
@@ -25,30 +25,31 @@
 #
 #******************************************************************************
 
+
 def name():
-  return "Merge shapes"
+    return "Merge shapes"
 
 def description():
-  return "Merge multiple shapes to one"
+    return "Merge multiple shapes to one"
 
 def category():
-  return "Vector"
+    return "Vector"
 
 def version():
-  return "0.1.19"
+    return "0.1.19"
 
 def qgisMinimumVersion():
-  return "1.0"
+    return "1.0"
 
 def authorName():
-  return "Alexander Bruy (NextGIS)"
+    return "Alexander Bruy (NextGIS)"
 
 def email():
-  return "alexander.bruy@gmail.com"
+    return "alexander.bruy@gmail.com"
 
 def icon():
-  return "icons/mergeshapes.png"
+    return "icons/mergeshapes.png"
 
-def classFactory( iface ):
-  from mergeshapes import MergeShapesPlugin
-  return MergeShapesPlugin( iface )
+def classFactory(iface):
+    from mergeshapes import MergeShapesPlugin
+    return MergeShapesPlugin(iface)
