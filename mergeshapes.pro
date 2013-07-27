@@ -5,6 +5,6 @@ SOURCES = __init__.py \
 FORMS = ui/mergeshapesdialogbase.ui \
         ui/aboutdialogbase.ui
 
-TRANSLATIONS = i18n/mergeshapes_ru_RU.ts \
-               i18n/mergeshapes_uk_UA.ts \
-               i18n/mergeshapes_fr_FR.ts
+TRANSLATIONS = i18n/mergeshapes_ru.ts \
+               i18n/mergeshapes_uk.ts \
+               i18n/mergeshapes_fr.ts
