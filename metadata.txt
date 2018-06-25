@@ -17,4 +17,4 @@ tracker = http://hub.qgis.org/projects/mergeshapes/issues
 repository = https://github.com/alexbruy/mergeshapes
 
 experimental = False
-deprecated = False
+deprecated = True

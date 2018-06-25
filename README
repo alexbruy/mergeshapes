@@ -1,3 +1,5 @@
 MergeShapes
 -----------
 Merge multiple shapefiles into single one.
+
+NOTE: this plugin is deprecated. Use Processing instead.
